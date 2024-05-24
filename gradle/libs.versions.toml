@@ -1,0 +1,14 @@
+[versions]
+semanticVersioning = "2.0.0"
+jGit = "6.8.0.202311291450-r"
+kotlinpoet = "1.16.0"
+agp = "8.4.1"
+
+[libraries]
+semantic-versioning = { group = "io.github.z4kn4fein", name = "semver", version.ref = "semanticVersioning" }
+jGit = { group = "org.eclipse.jgit", name = "org.eclipse.jgit", version.ref = "jGit" }
+kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinpoet" }
+android-gradleApi = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
+
+[plugins]
+
