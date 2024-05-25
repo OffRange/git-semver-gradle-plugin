@@ -1,6 +1,7 @@
 plugins {
     `kotlin-dsl`
     alias(libs.plugins.gradle.pluginPublish)
+    `maven-publish`
 }
 
 group = "de.davis"
