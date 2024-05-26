@@ -35,6 +35,12 @@ internal fun Project.createVersionProviderFile(versionCodeGenerator: VersionCode
     val outputDir = layout.buildDirectory.dir("generated/versioning/kotlin").get().asFile
     fileSpec.writeTo(outputDir)
 
-    val sourceSets = project.extensions.getByType<SourceSetContainer>()
-    sourceSets.getByName("main").extensions.findByType<SourceDirectorySet>()?.srcDir(outputDir)
+    runInAndroidAppExtension {
+        sourceSets.forEach {
+            it.kotlin.srcDir(outputDir)
+        }
+    }
+
+    val sourceSets = project.extensions.findByType<SourceSetContainer>()
+    sourceSets?.findByName("main")?.extensions?.findByType<SourceDirectorySet>()?.srcDir(outputDir)
 }
