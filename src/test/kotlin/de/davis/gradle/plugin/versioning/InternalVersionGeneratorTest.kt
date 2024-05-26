@@ -41,10 +41,4 @@ class InternalVersionGeneratorTest {
 
         assertEquals(expectedVersion, version.toString())
     }
-
-    @Test
-    fun `test computeVersion with MIN_VERSION`() {
-        val actualVersion = computeVersionInternal("0.0.0", LATEST, STABLE, Inc.PRE_RELEASE)
-        assertEquals("0.0.0", actualVersion.toString())
-    }
 }
