@@ -17,6 +17,10 @@ dependencies {
     testImplementation(libs.junit.jupiter.params)
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 tasks.test {
     useJUnitPlatform()
 }
