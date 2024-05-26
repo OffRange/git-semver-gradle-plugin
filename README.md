@@ -18,7 +18,7 @@ plugins {
 ### Development Version Customizations
 
 > [!NOTE]
-> Customization options like `incrementBy` and `channel` are intended for development versions where no Git tag has
+> Customization options like `defaultIncrement` and `channel` are intended for development versions where no Git tag has
 > been set yet. These customizations help in displaying the correct version during development and debugging.
 
 > [!NOTE]
@@ -37,12 +37,36 @@ versioning {
 
 #### Incrementing Version Parts
 
-When moving towards a new stable version and implementing new features, increment the minor version number by
-setting `incrementBy` to `Inc.MINOR`.
+If the release channel of the last version (determined by the latest git tag) and the `channel` property of the
+extension is `Channel.STABLE` , or if the release channel of the last version
+is newer than the release channel defined in the extension, the version is incremented by a strategy defined by
+the `defaultIncrement` property
 
 ```kotlin
 versioning {
-    incrementBy = Inc.MINOR
+    defaultIncrement = Inc.MINOR
+}
+```
+
+#### Incrementing Version Parts
+
+The `defaultIncrement` property is used to define which part of the version should be incremented under certain
+conditions. Specifically, this property comes into play when:
+
+1. The current git tag indicates that the project's version is stable, and there has been at least one commit since this
+   tag. If the `channel` property is also set to `Channel.STABLE`, it implies that a new version is required.
+   The `defaultIncrement` property will determine which version part (e.g., major, minor, or patch) should be
+   incremented.
+
+2. The release channel defined by the `channel` property is set to a "more unstable" version than the release channel of
+   the current/latest git tag version. For example, if the latest git tag is "1.0.0-rc.2" and the `channel` parameter is
+   set to `Channel.BETA`, the version will be incremented to "1.1.0-beta.1" (see the configuration below).
+
+Here is how you can set the `defaultIncrement` property in your `versioning` configuration:
+
+```kotlin
+versioning {
+    defaultIncrement = Inc.MINOR
 }
 ```
 
@@ -53,27 +77,6 @@ If you prefer including the full commit hash in the version name, set the `useSh
 ```kotlin
 versioning {
     useShortHash = false
-}
-```
-
-### Custom Version Validator
-
-For systems with specific version requirements (e.g., Android apps with version codes less than 2100000000), set up a
-custom version validator. This example ensures the major version does not exceed 210.
-
-```kotlin
-versioning {
-    versionValidator = { (major, minor, patch, preRelease, buildMetadata) ->
-        require(major < 210) { "Major version cannot be greater than 210" }
-    }
-}
-```
-
-To disable custom validation:
-
-```kotlin
-versioning {
-    versionValidator = { it }
 }
 ```
 
