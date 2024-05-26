@@ -1,39 +1,33 @@
 package de.davis.gradle.plugin.versioning
 
-import com.android.build.api.dsl.ApplicationExtension
 import io.github.z4kn4fein.semver.Version
+import org.eclipse.jgit.api.Git
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.MinimalExternalModuleDependency
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.*
-import java.util.*
 import javax.inject.Inject
 
-class VersioningPlugin @Inject constructor(
-    private val objectFactory: ObjectFactory,
-) : Plugin<Project> {
+class VersioningPlugin @Inject constructor(private val objectFactory: ObjectFactory) : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
-        val ext = extensions.create<VersioningExtension>(VersioningExtension.EXTENSION_NAME, rootDir, objectFactory)
+        val ext = extensions.create<VersioningExtension>(VersioningExtension.EXTENSION_NAME, objectFactory)
+
+        val nextVersion = Git.open(rootDir).computeVersion(ext.channel, ext.defaultIncrement, ext.useShortHash)
+
+        runInAndroidAppExtension {
+            defaultConfig {
+                versionName = nextVersion.toString()
+                logger.lifecycle("Setting android version $versionName")
+                versionCode = ext.run { nextVersion.versionCode }.toInt()
+            }
+        }
 
         afterEvaluate {
-            version = ext.computeVersion()
-
-            plugins.withId("com.android.application") {
-                extensions.getByType<ApplicationExtension>().apply {
-                    defaultConfig {
-                        logger.lifecycle("Setting android version")
-                        versionName = version.toString()
-                        versionCode = ext.run { (version as Version).versionCode }.toInt()
-                    }
-                }
-            }
+            version = nextVersion
 
             addDependencies()
-            createVersionProviderFile(ext.versionCodeGenerator)
+            createVersionProviderFile(ext.versionCodeGenerator, nextVersion)
 
             tasks.register<VersionPrinter>("printVersion") {
                 versionCodeGenerator = ext.versionCodeGenerator
@@ -47,7 +41,7 @@ class VersioningPlugin @Inject constructor(
             group = "versioning"
 
             doLast {
-                createVersionProviderFile(ext.versionCodeGenerator)
+                createVersionProviderFile(ext.versionCodeGenerator, nextVersion)
             }
         }
     }

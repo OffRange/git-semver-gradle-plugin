@@ -9,9 +9,8 @@ import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.getByType
 
-internal fun Project.createVersionProviderFile(versionCodeGenerator: VersionCodeGenerator) {
+internal fun Project.createVersionProviderFile(versionCodeGenerator: VersionCodeGenerator, version: Version) {
     val funSpec = FunSpec.builder("getVersion")
         .returns(Version::class)
         .addStatement(
@@ -23,7 +22,7 @@ internal fun Project.createVersionProviderFile(versionCodeGenerator: VersionCode
 
     val versionExtension = PropertySpec.builder("versionCode", UInt::class)
         .receiver(Version::class.asClassName())
-        .getter(FunSpec.getterBuilder().addStatement("return %Lu", versionCodeGenerator(version as Version)).build())
+        .getter(FunSpec.getterBuilder().addStatement("return %Lu", versionCodeGenerator(version)).build())
         .build()
 
     val fileSpec = FileSpec.builder("de.davis.versioning", "VersionProvider")
