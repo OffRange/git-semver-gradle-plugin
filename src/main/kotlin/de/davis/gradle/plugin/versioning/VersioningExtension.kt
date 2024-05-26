@@ -9,12 +9,35 @@ import java.io.File
 
 open class VersioningExtension(objectFactory: ObjectFactory, rootDir: File, logger: Logger) {
 
+    /**
+     * The channel to use for version computation.
+     * Defaults to [Channel.STABLE].
+     */
     var channel by objectFactory.createGradleProperty<Channel>(Channel.STABLE)
+
+    /**
+     * Whether to use a shortened version of the commit hash (7 characters) or the full hash.
+     * Defaults to `true` (use shortened hash).
+     */
     var useShortHash by objectFactory.createGradleProperty<Boolean>(true)
+
+    /**
+     * The default increment type to use when computing the next version.
+     * Defaults to [Inc.MINOR].
+     */
     var defaultIncrement by objectFactory.createGradleProperty<Inc>(Inc.MINOR)
 
+    /**
+     * The minimum version to use as the base version if the last tag name is less than this value.
+     * If the specified value is a stable version (e.g., "1.0.0"), unstable versions like "1.0.0-alpha.1" are also accepted.
+     * Defaults to [MIN_VERSION].
+     */
     var minVersion by objectFactory.createGradleProperty<Version>(MIN_VERSION)
 
+    /**
+     * The function used to generate version codes for Android applications.
+     * Defaults to [AndroidVersionCodeGenerator].
+     */
     var versionCodeGenerator by objectFactory.createGradleProperty<VersionCodeGenerator>(::AndroidVersionCodeGenerator)
 
     /**
@@ -47,7 +70,4 @@ open class VersioningExtension(objectFactory: ObjectFactory, rootDir: File, logg
     companion object {
         internal const val EXTENSION_NAME = "versioning"
     }
-
-    val Version.versionCode: UInt
-        get() = versionCodeGenerator(this)
 }
