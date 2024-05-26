@@ -12,6 +12,13 @@ dependencies {
     implementation(libs.jGit)
     implementation(libs.kotlinpoet)
     implementation(libs.android.gradleApi)
+
+    testImplementation(kotlin("test"))
+    testImplementation(libs.junit.jupiter.params)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 @Suppress("UnstableApiUsage")
