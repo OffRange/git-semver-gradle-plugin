@@ -53,9 +53,8 @@ class VersioningPlugin @Inject constructor(
     }
 
     private fun Project.addDependencies() {
-        val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
         dependencies {
-            implementation(libs.findLibrary("semantic-versioning").dependencyNotation())
+            implementation("io.github.z4kn4fein:semver:2.0.0")
         }
     }
 
