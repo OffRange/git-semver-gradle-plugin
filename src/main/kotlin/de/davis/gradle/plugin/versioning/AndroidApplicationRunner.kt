@@ -1,5 +1,6 @@
 package de.davis.gradle.plugin.versioning
 
+import com.android.build.api.dsl.ApplicationBaseFlavor
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
@@ -14,4 +15,34 @@ internal fun Project.runInAndroidAppExtension(action: ApplicationExtension.() ->
     plugins.withId("com.android.application") {
         extensions.getByType<ApplicationExtension>().apply(action)
     }
+}
+
+/**
+ * Applies versioning configuration to the Android application using the provided [VersioningExtension].
+ *
+ * This infix function sets the [ApplicationBaseFlavor.versionName] and [ApplicationBaseFlavor.versionCode] in the
+ * [ApplicationExtension.defaultConfig] block of the Android application based on the computed version and version code
+ * from the [VersioningExtension].
+ *
+ * @receiver The [ApplicationExtension] instance to which the versioning configuration will be applied.
+ * @param extension The [VersioningExtension] instance containing the computed version and version code.
+ */
+infix fun ApplicationExtension.versionedBy(extension: VersioningExtension) {
+    defaultConfig {
+        applyVersioning(extension)
+    }
+}
+
+/**
+ * Applies versioning configuration to the Android application flavor using the provided [VersioningExtension].
+ *
+ * This function sets the [ApplicationBaseFlavor.versionName] and [ApplicationBaseFlavor.versionCode] of the
+ * application flavor based on the computed version and version code from the [VersioningExtension].
+ *
+ * @receiver The [ApplicationBaseFlavor] instance to which the versioning configuration will be applied.
+ * @param extension The [VersioningExtension] instance containing the computed version and version code.
+ */
+fun ApplicationBaseFlavor.applyVersioning(extension: VersioningExtension) {
+    versionName = extension.computedVersion.toString()
+    versionCode = extension.computedVersionCode.toInt()
 }
