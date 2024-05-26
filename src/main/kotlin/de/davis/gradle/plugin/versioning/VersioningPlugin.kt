@@ -11,37 +11,30 @@ import javax.inject.Inject
 class VersioningPlugin @Inject constructor(private val objectFactory: ObjectFactory) : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
-        val ext = extensions.create<VersioningExtension>(VersioningExtension.EXTENSION_NAME, objectFactory)
+        val ext =
+            extensions.create<VersioningExtension>(VersioningExtension.EXTENSION_NAME, objectFactory, rootDir, logger)
 
-        val nextVersion = Git.open(rootDir).computeVersion(ext.channel, ext.defaultIncrement, ext.useShortHash)
-
-        runInAndroidAppExtension {
-            defaultConfig {
-                versionName = nextVersion.toString()
-                logger.lifecycle("Setting android version $versionName")
-                versionCode = ext.run { nextVersion.versionCode }.toInt()
-            }
-        }
 
         afterEvaluate {
+            val nextVersion = ext.computedVersion ?: return@afterEvaluate
             version = nextVersion
 
             addDependencies()
-            createVersionProviderFile(ext.versionCodeGenerator, nextVersion)
+            createVersionProviderFile(nextVersion, ext.computedVersionCode)
 
             tasks.register<VersionPrinter>("printVersion") {
                 versionCodeGenerator = ext.versionCodeGenerator
                 version = target.version as Version
             }
-        }
 
-        tasks.register("generateVersionProviderFile") {
-            description =
-                "Generates a Kotlin file that provides functions to receive the version of the current project"
-            group = "versioning"
+            tasks.register("generateVersionProviderFile") {
+                description =
+                    "Generates a Kotlin file that provides functions to receive the version of the current project"
+                group = "versioning"
 
-            doLast {
-                createVersionProviderFile(ext.versionCodeGenerator, nextVersion)
+                doLast {
+                    createVersionProviderFile(nextVersion, ext.computedVersionCode)
+                }
             }
         }
     }
