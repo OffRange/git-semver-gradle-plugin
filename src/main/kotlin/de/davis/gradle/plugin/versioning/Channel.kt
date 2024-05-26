@@ -41,3 +41,11 @@ enum class Channel(
         operator fun invoke(channelName: String) = runCatching { valueOf(channelName.uppercase()) }.getOrElse { STABLE }
     }
 }
+
+/**
+ * Extension function to convert a [TagName] to a [Channel].
+ *
+ * @receiver The [TagName] instance.
+ * @return The corresponding [Channel].
+ */
+fun TagName.toChannel() = Channel(this.split('.')[0])
