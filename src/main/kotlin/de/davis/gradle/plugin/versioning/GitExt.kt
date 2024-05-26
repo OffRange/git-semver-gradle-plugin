@@ -3,11 +3,13 @@ package de.davis.gradle.plugin.versioning
 import org.eclipse.jgit.api.Git
 
 
-fun Git.getLatestCommit(short: Boolean): String = with(repository) {
-    val parsedCommit = parseCommit(resolve("HEAD"))
-    if (short) return@with parsedCommit.abbreviate(7).name()
+fun Git.getLatestCommit(short: Boolean): String? = with(repository) {
+    resolve("HEAD")?.let {
+        val parsedCommit = parseCommit(resolve("HEAD"))
+        if (short) return@with parsedCommit.abbreviate(7).name()
 
-    parsedCommit.name
+        parsedCommit.name
+    }
 }
 
 fun Git.getLatestTag(): Version? =
