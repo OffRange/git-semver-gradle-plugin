@@ -13,7 +13,7 @@ open class VersioningExtension(objectFactory: ObjectFactory) {
     var versionCodeGenerator by objectFactory.createGradleProperty<VersionCodeGenerator>(::AndroidVersionCodeGenerator)
 
     companion object {
-        const val EXTENSION_NAME = "versioning"
+        internal const val EXTENSION_NAME = "versioning"
     }
 
     val Version.versionCode: UInt
