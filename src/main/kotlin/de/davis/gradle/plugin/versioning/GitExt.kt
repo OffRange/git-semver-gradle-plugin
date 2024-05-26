@@ -15,6 +15,8 @@ fun Git.getLatestTag(): Version? =
 
 fun Git.getLatestTagName(): TagName? = tagList().call().map { it.name.substringAfterLast("/") }.lastOrNull()
 
-fun Git.commitsSinceLastTag() = log().apply {
-    getLatestTag()?.let { not(repository.resolve(it.toString())) }
-}.call().count()
+fun Git.commitsSinceLastTag() = runCatching {
+    log().apply {
+        getLatestTagName()?.let { not(repository.resolve(it)) }
+    }.call().count()
+}.getOrNull()
