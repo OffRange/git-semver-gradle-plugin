@@ -1,7 +1,6 @@
 package de.davis.gradle.plugin.versioning
 
 import io.github.z4kn4fein.semver.Version
-import org.eclipse.jgit.api.Git
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
