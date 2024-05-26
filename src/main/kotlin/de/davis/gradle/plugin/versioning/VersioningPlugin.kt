@@ -59,10 +59,8 @@ class VersioningPlugin @Inject constructor(
     }
 
     private fun DependencyHandlerScope.implementation(dependencyNotation: Any) {
-        add("implementation", dependencyNotation)
+        runCatching {
+            add("implementation", dependencyNotation)
+        }
     }
-
-    private fun Optional<Provider<MinimalExternalModuleDependency>>.dependencyNotation() = get().get()
-
-
 }
