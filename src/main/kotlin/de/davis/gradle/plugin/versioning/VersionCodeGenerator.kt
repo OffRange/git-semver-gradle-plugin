@@ -9,7 +9,7 @@ internal typealias VersionCodeGenerator = (version: Version) -> UInt
 fun AndroidVersionCodeGenerator(version: Version) = with(version) {
     val buildCode = preRelease?.let {
         val parts = it.split('.')
-        Channel(parts[0]).computeBuildCode(parts.getOrNull(1)?.toUInt() ?: 1u)
+        parts[0].toChannel().computeBuildCode(parts.getOrNull(1)?.toUInt() ?: 1u)
     } ?: Channel.STABLE.computeBuildCode()
 
     val versionCode = (major * (10.0).pow(7) + minor * (10.0).pow(4) + patch * (10.0).pow(2)).toUInt() + buildCode
