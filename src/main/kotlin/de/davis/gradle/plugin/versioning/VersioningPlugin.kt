@@ -21,19 +21,24 @@ class VersioningPlugin @Inject constructor(private val objectFactory: ObjectFact
             addDependencies()
             createVersionProviderFile(nextVersion, ext.computedVersionCode)
 
-            tasks.register<VersionPrinter>("printVersion") {
+            val versionPrinter = tasks.register<VersionPrinter>("printVersion") {
                 versionCodeGenerator = ext.versionCodeGenerator
                 version = target.version as Version
             }
 
-            tasks.register("generateVersionProviderFile") {
+            val generatorTask = tasks.register("generateVersionProviderFile") {
                 description =
                     "Generates a Kotlin file that provides functions to receive the version of the current project"
                 group = "versioning"
 
+                dependsOn(versionPrinter.get())
                 doLast {
                     createVersionProviderFile(nextVersion, ext.computedVersionCode)
                 }
+            }
+
+            project.tasks.matching { it.name.startsWith("process") }.configureEach {
+                dependsOn(generatorTask)
             }
         }
     }
