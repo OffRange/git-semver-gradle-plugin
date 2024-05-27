@@ -4,7 +4,7 @@ plugins {
     `maven-publish`
 }
 
-group = "de.davis"
+group = "io.github.offrange"
 version = "0.2.0"
 
 dependencies {
@@ -28,14 +28,14 @@ tasks.test {
 @Suppress("UnstableApiUsage")
 gradlePlugin {
     website = "https://github.com/OffRange/git-semver-gradle-plugin"
-    vcsUrl = "https://github.com/OffRange/git-semver-gradle-plugin.git"
+    vcsUrl = "https://github.com/offrange/git-semver-gradle-plugin.git"
     plugins {
         create("versioning") {
             displayName = "Gradle Git Semantic Versioning Plugin"
             description =
                 "A Gradle plugin that automatically versions your project based on Git tags, following the Semantic Versioning 2.0 specification."
             tags = listOf("git", "vcs", "semantic version", "semver", "versioning")
-            id = "de.davis.git-semantic-versioning"
+            id = "$group.git-semantic-versioning"
             implementationClass = "de.davis.gradle.plugin.versioning.VersioningPlugin"
         }
     }
