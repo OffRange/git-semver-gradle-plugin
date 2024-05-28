@@ -9,7 +9,7 @@ Add the plugin to your `build.gradle.kts` file:
 
 ```kotlin
 plugins {
-    id("de.davis.git-semantic-versioning")
+    id("io.github.offrange.git-semantic-versioning")
 }
 ```
 
@@ -97,11 +97,13 @@ versioning {
 
 To use this plugin for versioning your Android app, follow these steps:
 
-1. Apply the plugin in your `build.gradle.kts` or `build.gradle` file as described in the Setup section.
+1. Apply the plugin in your `build.gradle.kts` or `build.gradle` file as described in the Getting Started section.
 2. Remove or comment out the `versionName` and `versionCode` properties in the `defaultConfig` block within
    the `application` extension.
+3. Apply `android versionedBy versioning` to the root of your build.gradle.kts file
 
 ```kotlin
+android versionedBy versioning
 android {
     defaultConfig {
         applicationId = "com.example.app"
