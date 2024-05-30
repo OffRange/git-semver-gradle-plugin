@@ -15,7 +15,7 @@ class VersioningPlugin @Inject constructor(private val objectFactory: ObjectFact
 
 
         afterEvaluate {
-            val nextVersion = ext.computedVersion ?: return@afterEvaluate
+            val nextVersion = ext.computedVersion
             version = nextVersion
 
             addDependencies()

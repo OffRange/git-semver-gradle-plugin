@@ -53,8 +53,8 @@ open class VersioningExtension(objectFactory: ObjectFactory, rootDir: File, logg
         runCatching {
             Git.open(rootDir).computeVersion(channel, defaultIncrement, useShortHash, minVersion)
         }.onFailure {
-            logger.warn("Version could not be computed", it)
-        }.getOrNull()
+            logger.warn("Version could not be computed, falling back to min version $minVersion", it)
+        }.getOrDefault(minVersion)
     }
 
     /**
@@ -65,7 +65,7 @@ open class VersioningExtension(objectFactory: ObjectFactory, rootDir: File, logg
      *
      * @see versionCodeGenerator
      */
-    val computedVersionCode by lazy { computedVersion?.let { versionCodeGenerator(it) } ?: 0u }
+    val computedVersionCode by lazy { versionCodeGenerator(computedVersion) }
 
     companion object {
         internal const val EXTENSION_NAME = "versioning"

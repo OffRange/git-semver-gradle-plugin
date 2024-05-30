@@ -3,7 +3,9 @@ package de.davis.gradle.plugin.versioning
 import io.github.z4kn4fein.semver.toVersion
 import org.eclipse.jgit.api.Git
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class GitVersionGeneratorTest {
@@ -24,6 +26,28 @@ class GitVersionGeneratorTest {
         assertEquals("0.1.0+dev.1.$commitHash".toVersion(), git.computeVersion())
     }
 
+    @Test
+    fun `computes min version when no git initiated`() {
+        val tempFolder = createTempFolder()
+
+        val output = GradleRunner.create()
+            .withProjectDir(tempFolder.root)
+            .withPluginClasspath()
+            .withArguments("printVersion")
+            .build().output.lines().filter {
+                it.contains("^\\|.*\\|".toRegex())
+            }
+
+        assertContains(
+            output,
+            "| Version Name : 0.1.0 |"
+        )
+        assertContains(
+            output,
+            "| Version Code : 10096 |"
+        )
+    }
+
     private fun createTempFolder() = TemporaryFolder().apply {
         create()
 
@@ -31,7 +55,7 @@ class GitVersionGeneratorTest {
         newFile("build.gradle.kts").writeText(
             """
                 plugins{
-                   id("de.davis.git-semantic-versioning")
+                   id("io.github.offrange.git-semantic-versioning")
                 }
             """.trimIndent()
         )
