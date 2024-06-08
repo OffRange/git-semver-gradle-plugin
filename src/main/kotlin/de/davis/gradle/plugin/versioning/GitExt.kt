@@ -1,5 +1,6 @@
 package de.davis.gradle.plugin.versioning
 
+import io.github.z4kn4fein.semver.toVersionOrNull
 import org.eclipse.jgit.api.Git
 
 /**
@@ -19,12 +20,15 @@ fun Git.getLatestCommit(short: Boolean): String? = with(repository) {
 }
 
 /**
- * Retrieves the name of the latest tag in the Git repository.
+ * Retrieves the name of the latest valid semantic version tag in the Git repository.
  *
  * @receiver An instance of the [Git] class representing the current Git repository.
  * @return The name of the latest tag, or null if no tags are found.
  */
-fun Git.getLatestTagName(): TagName? = tagList().call().map { it.name.substringAfterLast("/") }.lastOrNull()
+fun Git.getLatestTagName(): TagName? =
+    tagList().call().map { it.name.substringAfterLast("/") }.sortedDescending()
+        .firstNotNullOfOrNull { it.toVersionOrNull() }?.toString()
+
 
 /**
  * Calculates the number of commits since the last tag in the Git repository.

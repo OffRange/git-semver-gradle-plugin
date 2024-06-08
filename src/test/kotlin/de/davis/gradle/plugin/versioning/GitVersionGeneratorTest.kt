@@ -48,6 +48,27 @@ class GitVersionGeneratorTest {
         )
     }
 
+    @Test
+    fun `gets latest valid version tag name`() {
+        fun Git.commitAndTag(tagName: String) {
+            commit().setMessage("Test").call()
+            tag().setName(tagName).call()
+        }
+
+        with(createTempFolder()) {
+            val git = Git.init().setDirectory(root).call()
+            git.commitAndTag("v1.0.0")
+            newFile("File.txt")
+            git.commitAndTag("1.0.0")
+            newFile("File2.txt")
+            git.commitAndTag("a.b.c")
+            newFile("File3.txt")
+            git.commitAndTag("1.2.0")
+
+            assertEquals("1.2.0", git.getLatestTagName())
+        }
+    }
+
     private fun createTempFolder() = TemporaryFolder().apply {
         create()
 
