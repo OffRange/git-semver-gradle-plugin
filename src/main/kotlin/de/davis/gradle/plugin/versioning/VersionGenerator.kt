@@ -21,7 +21,7 @@ import org.eclipse.jgit.api.Git
  * @param useShortHash Flag indicating whether to use the short form of the commit hash, default is true.
  * @param minVersion The minimum version to use, defaults to [MIN_VERSION]
  * @return The computed version based on the Git repository state and the specified channel.
- * @see getLatestTagName
+ * @see getLatestVersionTagName
  * @see commitsSinceLastTag
  * @see getLatestCommit
  */
@@ -31,7 +31,7 @@ fun Git.computeVersion(
     useShortHash: Boolean = true,
     minVersion: Version = MIN_VERSION
 ): Version {
-    val lastTag = getLatestTagName() ?: minVersion.toString()
+    val lastTag = getLatestVersionTagName() ?: minVersion.toString()
     val commitsSinceLastTag = commitsSinceLastTag() ?: 0
     val lastHash = getLatestCommit(useShortHash)
     return computeVersionInternal(

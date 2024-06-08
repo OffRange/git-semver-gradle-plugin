@@ -25,7 +25,7 @@ fun Git.getLatestCommit(short: Boolean): String? = with(repository) {
  * @receiver An instance of the [Git] class representing the current Git repository.
  * @return The name of the latest tag, or null if no tags are found.
  */
-fun Git.getLatestTagName(): TagName? =
+fun Git.getLatestVersionTagName(): TagName? =
     tagList().call().map { it.name.substringAfterLast("/") }.sortedDescending()
         .firstNotNullOfOrNull { it.toVersionOrNull() }?.toString()
 
@@ -38,6 +38,6 @@ fun Git.getLatestTagName(): TagName? =
  */
 fun Git.commitsSinceLastTag() = runCatching {
     log().apply {
-        getLatestTagName()?.let { not(repository.resolve(it)) }
+        getLatestVersionTagName()?.let { not(repository.resolve(it)) }
     }.call().count()
 }.getOrNull()

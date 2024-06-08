@@ -65,7 +65,7 @@ class GitVersionGeneratorTest {
             newFile("File3.txt")
             git.commitAndTag("1.2.0")
 
-            assertEquals("1.2.0", git.getLatestTagName())
+            assertEquals("1.2.0", git.getLatestVersionTagName())
         }
     }
 
