@@ -11,7 +11,7 @@ dependencies {
     implementation(libs.semantic.versioning)
     implementation(libs.jGit)
     implementation(libs.kotlinpoet)
-    implementation(libs.android.gradleApi)
+    compileClasspath(libs.android.gradleApi)
 
     testImplementation(kotlin("test"))
     testImplementation(libs.junit.jupiter.params)
