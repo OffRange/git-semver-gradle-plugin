@@ -100,7 +100,8 @@ To use this plugin for versioning your Android app, follow these steps:
 1. Apply the plugin in your `build.gradle.kts` or `build.gradle` file as described in the Getting Started section.
 2. Remove or comment out the `versionName` and `versionCode` properties in the `defaultConfig` block within
    the `application` extension.
-3. Apply `android versionedBy versioning` to the root of your build.gradle.kts file
+3. Apply the generated versioning source set `build/generated/versioning/kotlin` to your build.gradle.kts file.
+4. Apply `android versionedBy versioning` to the root of your build.gradle.kts file
 
 ```kotlin
 android versionedBy versioning
@@ -117,6 +118,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+    }
+
+    sourceSets.getByName("main") {
+        kotlin.srcDir("build/generated/versioning/kotlin")
     }
 }
 ```
