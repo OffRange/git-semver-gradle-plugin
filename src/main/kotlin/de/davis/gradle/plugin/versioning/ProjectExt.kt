@@ -34,11 +34,13 @@ internal fun Project.createVersionProviderFile(version: Version, versionCode: UI
     val outputDir = layout.buildDirectory.dir("generated/versioning/kotlin").get().asFile
     fileSpec.writeTo(outputDir)
 
+    /* TODO this causes the IDE to warn the user about "Duplicate content roots detected"
     runInAndroidAppExtension {
-        sourceSets.forEach {
-            it.kotlin.srcDir(outputDir)
+        sourceSets.getByName("main") {
+            kotlin.srcDir(outputDir)
         }
     }
+    */
 
     val sourceSets = project.extensions.findByType<SourceSetContainer>()
     sourceSets?.findByName("main")?.extensions?.findByType<SourceDirectorySet>()?.srcDir(outputDir)
