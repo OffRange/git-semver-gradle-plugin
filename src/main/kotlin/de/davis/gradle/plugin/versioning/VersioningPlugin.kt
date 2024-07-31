@@ -14,11 +14,11 @@ class VersioningPlugin @Inject constructor(private val objectFactory: ObjectFact
             extensions.create<VersioningExtension>(VersioningExtension.EXTENSION_NAME, objectFactory, rootDir, logger)
 
 
+        addDependencies()
         afterEvaluate {
             val nextVersion = ext.computedVersion
             version = nextVersion
 
-            addDependencies()
             createVersionProviderFile(nextVersion, ext.computedVersionCode)
 
             val versionPrinter = tasks.register<VersionPrinter>("printVersion") {
