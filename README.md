@@ -102,6 +102,8 @@ To use this plugin for versioning your Android app, follow these steps:
    the `application` extension.
 3. Apply the generated versioning source set `build/generated/versioning/kotlin` to your build.gradle.kts file.
 4. Apply `android versionedBy versioning` to the root of your build.gradle.kts file
+5. Apply `build/generated/versioning/kotlin` to your source set
+6. Add `io.github.z4kn4fein:semver:2.0.0` dependency
 
 ```kotlin
 android versionedBy versioning
@@ -123,6 +125,10 @@ android {
     sourceSets.getByName("main") {
         kotlin.srcDir("build/generated/versioning/kotlin")
     }
+}
+
+dependencies {
+    implementation("io.github.z4kn4fein:semver:2.0.0")
 }
 ```
 
