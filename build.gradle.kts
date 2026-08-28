@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.offrange"
-version = "0.2.5"
+version = "0.2.6"
 
 dependencies {
     implementation(libs.semantic.versioning)
