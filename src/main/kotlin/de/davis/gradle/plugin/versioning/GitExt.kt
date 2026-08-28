@@ -26,8 +26,11 @@ fun Git.getLatestCommit(short: Boolean): String? = with(repository) {
  * @return The name of the latest tag, or null if no tags are found.
  */
 fun Git.getLatestVersionTagName(): TagName? =
-    tagList().call().map { it.name.substringAfterLast("/") }.sortedDescending()
-        .firstNotNullOfOrNull { it.toVersionOrNull() }?.toString()
+    tagList().call()
+        .mapNotNull { it.name.substringAfterLast("/").toVersionOrNull() }
+        .sortedDescending()
+        .firstOrNull()
+        ?.toString()
 
 
 /**

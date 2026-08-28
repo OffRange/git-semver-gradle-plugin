@@ -69,6 +69,30 @@ class GitVersionGeneratorTest {
         }
     }
 
+    @Test
+    fun `stable release tag outranks its own prerelease tags`() {
+        fun Git.commitAndTag(tagName: String) {
+            commit().setMessage("Test").call()
+            tag().setName(tagName).call()
+        }
+
+        with(createTempFolder()) {
+            val git = Git.init().setDirectory(root).call()
+            git.commitAndTag("2.0.0-beta.1")
+            newFile("File.txt")
+            git.commitAndTag("2.0.0-rc.1")
+            newFile("File2.txt")
+            git.commitAndTag("2.0.0-rc.2")
+            newFile("File3.txt")
+            git.commitAndTag("2.0.0")
+
+            // "2.0.0" is a prefix of "2.0.0-rc.2", so naive string sorting ranks
+            // the prerelease tag above the stable one. Must compare by parsed
+            // semver precedence instead.
+            assertEquals("2.0.0", git.getLatestVersionTagName())
+        }
+    }
+
     private fun createTempFolder() = TemporaryFolder().apply {
         create()
 
